@@ -1,9 +1,5 @@
 package validate
 
-import "errors"
-
-var ErrInvalidValidationType = errors.New("invalid validation value type")
-
 type Validator interface {
 	Validate() error
 }
@@ -25,15 +21,12 @@ func New[T any](v T, validatorFuncs ...ValidatorFunc[T]) Validator {
 }
 
 type validator[T any] struct {
-	v any
+	v T
 	f func(t T) error
 }
 
 func (v validator[T]) Validate() error {
-	if t, ok := v.v.(T); ok {
-		return v.f(t)
-	}
-	return ErrInvalidValidationType
+	return v.f(v.v)
 }
 
 func Validate(validators ...Validator) error {

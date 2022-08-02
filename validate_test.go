@@ -1,7 +1,7 @@
 package validate
 
 import (
-	"errors"
+	"fmt"
 	"regexp"
 	"testing"
 
@@ -11,19 +11,10 @@ import (
 type animalType string
 
 const (
-	Cat   = "CAT"
-	Dog   = "DOG"
-	Other = "OTHER"
+	Cat   animalType = "CAT"
+	Dog   animalType = "DOG"
+	Other animalType = "OTHER"
 )
-
-var ErrInvalidAnimalType = errors.New("invalid animal type")
-
-func validAnimalType(v animalType) error {
-	if v == Cat || v == Dog || v == Other {
-		return nil
-	}
-	return ErrInvalidAnimalType
-}
 
 var nameRegex = regexp.MustCompile("^[a-zA-Z]+$")
 
@@ -36,8 +27,8 @@ type animal struct {
 func (v animal) Validate() error {
 	return Validate(
 		New(v.Name, StringRange(3, 10), StringMatchRegex(nameRegex)),
-		New(v.Age, IntRange(0, 100)),
-		New(v.Type, Required[animalType], validAnimalType),
+		New(v.Age, NumberRange(0, 100)),
+		New(v.Type, Required[animalType], Enum(Cat, Dog, Other)),
 	)
 }
 
@@ -60,7 +51,7 @@ func TestValidate(t *testing.T) {
 				Age:  10,
 				Type: Dog,
 			},
-			e: ErrStringRange,
+			e: ErrStringRange(3, 10),
 		},
 		{
 			v: animal{
@@ -68,7 +59,7 @@ func TestValidate(t *testing.T) {
 				Age:  -1,
 				Type: Other,
 			},
-			e: ErrIntRange,
+			e: ErrNumberRange(0, 100),
 		},
 		{
 			v: animal{
@@ -76,7 +67,7 @@ func TestValidate(t *testing.T) {
 				Age:  10,
 				Type: "fish",
 			},
-			e: ErrInvalidAnimalType,
+			e: ErrEnum(Cat, Dog, Other),
 		},
 		{
 			v: animal{
@@ -84,7 +75,7 @@ func TestValidate(t *testing.T) {
 				Age:  10,
 				Type: "fish",
 			},
-			e: ErrStringMatchRegex,
+			e: ErrStringMatchRegex(nameRegex),
 		},
 		{
 			v: animal{
@@ -99,5 +90,6 @@ func TestValidate(t *testing.T) {
 	for _, tt := range v {
 		err := tt.v.Validate()
 		assert.Equal(t, tt.e, err)
+		fmt.Println(err)
 	}
 }
