@@ -78,7 +78,7 @@ You can find examples [here](https://github.com/disgoorg/validate/tree/master/_e
 
 # Troubleshooting
 
-For help feel free to open an issues or reach out on [Discord](https://discord.gg/TewhTfDpvW)
+For help feel free to open an issue or reach out on [Discord](https://discord.gg/TewhTfDpvW)
 
 ## Contributing
 
@@ -87,4 +87,3 @@ Contributions are welcomed but for bigger changes we recommend first reaching ou
 ## License
 
 Distributed under the [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/disgoorg/validate/blob/master/LICENSE). See LICENSE for more information.
-
