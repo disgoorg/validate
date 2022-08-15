@@ -17,7 +17,7 @@ func SliceLength(max int) ValidatorFunc[[]any] {
 	}
 }
 
-func ErrorNilElement(i int) error {
+func ErrNilElement(i int) error {
 	return fmt.Errorf("slice cannot contain nil elements. index: %d", i)
 }
 
@@ -25,7 +25,7 @@ func SliceNoneNil() ValidatorFunc[[]any] {
 	return func(v []any) error {
 		for i, e := range v {
 			if e == nil {
-				return ErrorNilElement(i)
+				return ErrNilElement(i)
 			}
 		}
 		return nil
