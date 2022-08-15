@@ -2,16 +2,17 @@ package validate
 
 import (
 	"fmt"
+	"reflect"
 )
 
-func ErrLength(max int) error {
+func ErrMaxLen(max int) error {
 	return fmt.Errorf("slice cannot have more than %d elements", max)
 }
 
-func SliceLength[T any](max int) ValidatorFunc[[]T] {
+func SliceMaxLen[T any](max int) ValidatorFunc[[]T] {
 	return func(v []T) error {
 		if len(v) > max {
-			return ErrLength(max)
+			return ErrMaxLen(max)
 		}
 		return nil
 	}
@@ -22,8 +23,16 @@ func ErrNilElement(i int) error {
 }
 
 func SliceNoneNil[T any](v []T) error {
+	var t T
+	switch reflect.TypeOf(t).Kind() {
+	case reflect.Interface, reflect.Slice, reflect.Chan, reflect.Func, reflect.Map, reflect.Pointer, reflect.UnsafePointer:
+	default:
+		return nil
+	}
+
 	for i, e := range v {
-		if e == nil {
+		value := reflect.ValueOf(e)
+		if value.IsNil() {
 			return ErrNilElement(i)
 		}
 	}
