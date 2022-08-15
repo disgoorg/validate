@@ -8,8 +8,8 @@ func ErrLength(max int) error {
 	return fmt.Errorf("slice cannot have more than %d elements", max)
 }
 
-func SliceLength(max int) ValidatorFunc[[]any] {
-	return func(v []any) error {
+func SliceLength[T any](max int) ValidatorFunc[[]T] {
+	return func(v []T) error {
 		if len(v) > max {
 			return ErrLength(max)
 		}
@@ -21,13 +21,11 @@ func ErrNilElement(i int) error {
 	return fmt.Errorf("slice cannot contain nil elements. index: %d", i)
 }
 
-func SliceNoneNil() ValidatorFunc[[]any] {
-	return func(v []any) error {
-		for i, e := range v {
-			if e == nil {
-				return ErrNilElement(i)
-			}
+func SliceNoneNil[T any](v []T) error {
+	for i, e := range v {
+		if e == nil {
+			return ErrNilElement(i)
 		}
-		return nil
 	}
+	return nil
 }
