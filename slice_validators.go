@@ -23,17 +23,16 @@ func ErrNilElement(i int) error {
 }
 
 func SliceNoneNil[T any](v []T) error {
-	var t T
-	switch reflect.TypeOf(t).Kind() {
-	case reflect.Interface, reflect.Slice, reflect.Chan, reflect.Func, reflect.Map, reflect.Pointer, reflect.UnsafePointer:
-	default:
-		return nil
-	}
-
 	for i, e := range v {
-		value := reflect.ValueOf(e)
-		if value.IsNil() {
+		typeOf := reflect.TypeOf(e)
+		if typeOf == nil {
 			return ErrNilElement(i)
+		}
+		switch typeOf.Kind() {
+		case reflect.Interface, reflect.Slice, reflect.Chan, reflect.Func, reflect.Map, reflect.Pointer, reflect.UnsafePointer:
+			if reflect.ValueOf(e).IsNil() {
+				return ErrNilElement(i)
+			}
 		}
 	}
 	return nil
