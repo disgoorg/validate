@@ -20,10 +20,12 @@ $ go get github.com/disgoorg/validate
 
 ## Usage
 
-Usage is simple. Create a new type and implement the `validate.Validator` interface. Then, use the `validate.Validate` function with `validate.New` and pass the field or value to validate as first parameter.
-After this you can pass as many `validate.ValidateFunc[any]` functions as you want to validate the value. The functions will be executed in order and the first one that returns an error will stop the validation.
+The usage is simple. Create a new type and implement the `validate.Validator` interface. Then, use the `validate.Validate` function with `validate.Value`, `validate.Slice`, `validate.Map` as arguments and pass the field or value to validate as first parameter.
+After this you can pass as many `validate.ValueValidateFunc`, `validate.SliceValidateFunc`, `validate.MapValidateFunc` functions as you want to validate the value. The validators will be executed in order and all errors will be returned as a single error.
 
 ```go
+package test
+
 import "github.com/disgoorg/validate"
 
 type Foo struct {
@@ -33,8 +35,8 @@ type Foo struct {
 
 func (f Foo) Validate() error {
     return validate.Validate(
-        validate.New(f.Bar, validate.Required[string], validate.StringRange(0, 10)),
-        validate.New(f.Baz, validate.Required[int], validate.NumberRange(-5, 5)),
+        validate.Value(f.Bar, validate.Required[string], validate.StringRange(0, 10)),
+        validate.Value(f.Baz, validate.Required[int], validate.NumberRange(-5, 5)),
     )
 }
 
@@ -56,7 +58,14 @@ For this you can use functions with closures to pass parameters to the validator
 
 Here is an example:
 ```go
-func StringRange(min int, max int) ValidatorFunc[string] {
+package test
+
+import (
+    "fmt"
+    "github.com/disgoorg/validate"
+)
+
+func StringRange(min int, max int) validate.ValueValidateFunc[string] {
 	return func(v string) error {
 		if len(v) < min || len(v) > max {
 			return fmt.Errorf("string must be between %d and %d characters", min, max)

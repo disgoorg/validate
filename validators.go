@@ -19,7 +19,7 @@ func ErrEnum[T comparable](a ...T) error {
 	return fmt.Errorf("string needs to be one of the following: %v", a)
 }
 
-func Enum[T comparable](a ...T) ValidatorFunc[T] {
+func Enum[T comparable](a ...T) ValueValidateFunc[T] {
 	return func(v T) error {
 		for _, e := range a {
 			if v == e {
