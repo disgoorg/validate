@@ -20,3 +20,15 @@ func NumberRange[T Number](min T, max T) ValueValidateFunc[T] {
 		return nil
 	}
 }
+
+func NumberRangePtr[T Number](min T, max T) ValueValidateFunc[*T] {
+	return func(v *T) error {
+		if v == nil {
+			return nil
+		}
+		if *v < min || *v > max {
+			return ErrNumberRange(min, max)
+		}
+		return nil
+	}
+}
