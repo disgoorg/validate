@@ -10,9 +10,9 @@ type Foo struct {
 
 func (f Foo) Validate() error {
 	return validate.Validate(
-		validate.New(f.Bar, validate.Required[string], validate.StringRange(0, 10)),
-		validate.New(f.Baz, validate.Required[int], validate.NumberRange(-5, 5)),
-		validate.New(f.Bay, validate.SliceMaxLen[*int](5), validate.SliceNoneNil[*int]),
+		validate.Value(f.Bar, validate.Required[string], validate.StringRange(0, 10)),
+		validate.Value(f.Baz, validate.Required[int], validate.NumberRange(-5, 5)),
+		validate.Value(f.Bay, validate.SliceMaxLen[*int](5), validate.SliceNoneNil[*int]),
 	)
 }
 

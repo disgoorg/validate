@@ -26,9 +26,9 @@ type animal struct {
 
 func (v animal) Validate() error {
 	return Validate(
-		New(v.Name, StringRange(3, 10), StringMatchRegex(nameRegex)),
-		New(v.Age, NumberRange(0, 100)),
-		New(v.Type, Required[animalType], Enum(Cat, Dog, Other)),
+		Value(v.Name, StringRange(3, 10), StringMatchRegex(nameRegex)),
+		Value(v.Age, NumberRange(0, 100)),
+		Value(v.Type, Required[animalType], Enum(Cat, Dog, Other)),
 	)
 }
 

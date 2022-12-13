@@ -12,9 +12,21 @@ func ErrNumberRange[T Number](min T, max T) error {
 	return fmt.Errorf("number needs to be between %v and %v", min, max)
 }
 
-func NumberRange[T Number](min T, max T) ValidatorFunc[T] {
+func NumberRange[T Number](min T, max T) ValueValidateFunc[T] {
 	return func(v T) error {
 		if v < min || v > max {
+			return ErrNumberRange(min, max)
+		}
+		return nil
+	}
+}
+
+func NumberRangePtr[T Number](min T, max T) ValueValidateFunc[*T] {
+	return func(v *T) error {
+		if v == nil {
+			return nil
+		}
+		if *v < min || *v > max {
 			return ErrNumberRange(min, max)
 		}
 		return nil

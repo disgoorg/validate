@@ -9,7 +9,7 @@ func ErrMaxLen(max int) error {
 	return fmt.Errorf("slice cannot have more than %d elements", max)
 }
 
-func SliceMaxLen[T any](max int) ValidatorFunc[[]T] {
+func SliceMaxLen[T any](max int) ValueValidateFunc[[]T] {
 	return func(v []T) error {
 		if len(v) > max {
 			return ErrMaxLen(max)
